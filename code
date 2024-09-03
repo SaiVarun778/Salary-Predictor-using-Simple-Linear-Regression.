@@ -1,0 +1,47 @@
+# Import required packages
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
+import matplotlib.pyplot as plt
+
+# Read the dataset using pandas
+df = pd.read_csv("Salary_dataset.csv")
+
+# Reshape the independent variable into a two-dimensional
+X = df['YearsExperience'].values.reshape(-1, 1)
+y = df['Salary'].values
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=10)
+
+# Create and fit the linear regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict values for the test set
+y_pred = model.predict(X_test)
+
+# Calculate R² score as a measure of accuracy
+r2 = r2_score(y_test, y_pred)
+accuracy = r2 * 100
+print(f"Model Accuracy (R² Score): {accuracy:.2f}%")
+
+# Predict values for the entire dataset for visualization
+y_res = model.predict(X)
+
+# Predict new values for testing
+X_new = np.array([3, 4, 5]).reshape(-1, 1)
+predicted_sal = model.predict(X_new)
+
+# Visualize the output
+plt.scatter(X, y, color='blue', label='Actual Data')
+plt.scatter(X_new, predicted_sal, color='red', label='New Predictions')
+plt.plot(X, y_res, color='green', label='Regression Line')
+plt.xlabel('Years of Experience')
+plt.ylabel('Salary')
+plt.title('Salary Predictor')
+plt.legend()
+plt.savefig("salarypredictor.jpg")
+plt.show()
